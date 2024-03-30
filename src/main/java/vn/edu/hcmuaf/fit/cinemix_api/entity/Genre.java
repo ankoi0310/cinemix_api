@@ -18,6 +18,11 @@ public class Genre extends BaseEntity {
     private String name;
     private String description;
 
-    @ManyToMany(mappedBy = "genres")
+    @ManyToMany
+    @JoinTable(
+            name = "movie_genre",
+            joinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id")
+    )
     private List<Movie> movies;
 }
