@@ -28,7 +28,8 @@ public class MovieRepositoryImpl extends AbstractRepository<Movie, Long> impleme
 
     @Override
     public Optional<Movie> findByTitle(String title) {
-        return Optional.ofNullable(queryFactory.selectFrom(qMovie).where(qMovie.title.equalsIgnoreCase(title)).fetchFirst());
+        return Optional.ofNullable(queryFactory.selectFrom(qMovie).where(qMovie.title.equalsIgnoreCase(title))
+                                               .fetchFirst());
     }
 
     private BooleanBuilder buildSearchPredicate(MovieSearch movieSearch) {
@@ -47,9 +48,11 @@ public class MovieRepositoryImpl extends AbstractRepository<Movie, Long> impleme
         }
 
         if (movieSearch.getActors() != null && !movieSearch.getActors().isEmpty()) {
+            BooleanBuilder actorPredicate = new BooleanBuilder();
             for (String actor : movieSearch.getActors()) {
-                predicate.and(qMovie.actors.any().containsIgnoreCase(actor));
+                actorPredicate.or(qMovie.actors.any().containsIgnoreCase(actor));
             }
+            predicate.and(actorPredicate);
         }
 
         if (movieSearch.getReleaseDate() != null) {

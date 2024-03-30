@@ -6,7 +6,7 @@ import vn.edu.hcmuaf.fit.cinemix_api.dto.movie.*;
 import java.util.List;
 
 public interface MovieService {
-    List<MovieDTO> searchMovies(MovieSearch movieSearch);
+    List<MovieDTO> searchMovies(MovieSearch movieSearch) throws BaseException;
 
     List<MovieDTO> getAllMovies() throws BaseException;
 

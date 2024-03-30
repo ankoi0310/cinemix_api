@@ -26,8 +26,14 @@ public class MovieServiceImpl implements MovieService {
     private final MovieMapper movieMapper;
 
     @Override
-    public List<MovieDTO> searchMovies(MovieSearch movieSearch) {
-        return null;
+    public List<MovieDTO> searchMovies(MovieSearch movieSearch) throws BaseException {
+        try {
+            List<Movie> movies = movieRepository.search(movieSearch);
+            return movieMapper.toDTOs(movies);
+        } catch (Exception e) {
+            log.error(e.toString());
+            throw new ServiceUnavailableException("Tìm kiếm phim không thành công");
+        }
     }
 
     @Override
