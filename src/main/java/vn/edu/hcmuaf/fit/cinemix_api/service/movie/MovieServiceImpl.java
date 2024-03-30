@@ -31,9 +31,14 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<MovieDTO> getAllMovies() {
-        List<Movie> movies = movieRepository.findAll();
-        return movieMapper.toDTOs(movies);
+    public List<MovieDTO> getAllMovies() throws BaseException {
+        try {
+            List<Movie> movies = movieRepository.findAll();
+            return movieMapper.toDTOs(movies);
+        } catch (Exception e) {
+            log.error(e.toString());
+            throw new ServiceUnavailableException("Lấy danh sách phim không thành công");
+        }
     }
 
     @Override
@@ -42,9 +47,12 @@ public class MovieServiceImpl implements MovieService {
             Movie movie = movieRepository.findById(id)
                                          .orElseThrow(() -> new NotFoundException("Không tìm thấy phim theo id: " + id));
             return movieMapper.toDTO(movie);
+        } catch (NotFoundException e) {
+            log.error(e.toString());
+            throw e;
         } catch (Exception e) {
-            log.error("Không thể lấy phim theo id", e);
-            throw new ServiceUnavailableException("Không thể lấy phim theo id");
+            log.error(e.toString());
+            throw new ServiceUnavailableException("Lấy thông tin phim không thành công");
         }
     }
 
@@ -53,35 +61,28 @@ public class MovieServiceImpl implements MovieService {
         try {
             Movie movie = movieRepository.findByTitle(movieCreate.getTitle()).orElse(null);
             if (movie != null) {
-                throw new ServiceBusinessException("Tên phim đã tồn tại: " + movieCreate.getTitle());
+                throw new BadRequestException("Tên phim đã tồn tại: " + movieCreate.getTitle());
             }
 
             // Get all genres by id
             List<Long> genreIds = movieCreate.getGenres().stream().map(GenreDTO::getId).toList();
             List<Genre> genres = genreRepository.findAllById(genreIds);
 
-            Movie newMovie = Movie.builder()
-                                  .title(movieCreate.getTitle())
-                                  .genres(genres)
-                                  .synopsis(movieCreate.getSynopsis())
-                                  .description(movieCreate.getDescription())
-                                  .director(movieCreate.getDirector())
-                                  .actors(movieCreate.getActors())
-                                  .duration(movieCreate.getDuration())
-                                  .releaseDate(movieCreate.getReleaseDate())
+            Movie newMovie = Movie.builder().title(movieCreate.getTitle()).genres(genres)
+                                  .synopsis(movieCreate.getSynopsis()).description(movieCreate.getDescription())
+                                  .director(movieCreate.getDirector()).actors(movieCreate.getActors())
+                                  .duration(movieCreate.getDuration()).releaseDate(movieCreate.getReleaseDate())
 //                                  .posterUrl(movieCreate.getPosterUrl())
-                                  .trailerUrl(movieCreate.getTrailerUrl())
-                                  .state(MovieState.COMING_SOON)
-                                  .build();
+                                  .trailerUrl(movieCreate.getTrailerUrl()).state(MovieState.COMING_SOON).build();
 
             movieRepository.save(newMovie);
             return movieMapper.toDTO(newMovie);
-        } catch (ServiceBusinessException e) {
-            log.error(e.getMessage());
-            throw new ServiceBusinessException(e.getMessage());
+        } catch (BadRequestException e) {
+            log.error(e.toString());
+            throw e;
         } catch (Exception e) {
-            log.error("Không thể tạo phim", e);
-            throw new ServiceUnavailableException("Không thể tạo phim");
+            log.error(e.toString());
+            throw new ServiceUnavailableException("Tạo phim không thành công");
         }
     }
 
@@ -115,11 +116,11 @@ public class MovieServiceImpl implements MovieService {
             movieRepository.save(movie);
             return movieMapper.toDTO(movie);
         } catch (NotFoundException e) {
-            log.error(e.getMessage());
-            throw new NotFoundException(e.getMessage());
+            log.error(e.toString());
+            throw e;
         } catch (Exception e) {
-            log.error("Không thể cập nhật phim", e);
-            throw new ServiceUnavailableException("Không thể cập nhật phim");
+            log.error(e.toString());
+            throw new ServiceUnavailableException("Cập nhật phim không thành công");
         }
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 public interface MovieService {
     List<MovieDTO> searchMovies(MovieSearch movieSearch);
 
-    List<MovieDTO> getAllMovies();
+    List<MovieDTO> getAllMovies() throws BaseException;
 
     MovieDTO getMovieById(Long id) throws BaseException;
 
