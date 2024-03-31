@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.hcmuaf.fit.cinemix_api.core.handler.domain.HttpResponse;
 import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.BaseException;
+import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.MovieState;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.movie.*;
 import vn.edu.hcmuaf.fit.cinemix_api.service.movie.MovieService;
 
@@ -66,5 +67,11 @@ public class MovieController {
 
         MovieDTO movie = movieService.updateMovie(movieUpdate);
         return ResponseEntity.ok(HttpResponse.success(movie, "Cập nhật phim thành công!"));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<HttpResponse> updateMovieState(@PathVariable Long id, @RequestParam MovieState state) throws BaseException {
+        MovieDTO movie = movieService.updateMovieState(id, state);
+        return ResponseEntity.ok(HttpResponse.success(movie, "Cập nhật trạng thái phim thành công!"));
     }
 }

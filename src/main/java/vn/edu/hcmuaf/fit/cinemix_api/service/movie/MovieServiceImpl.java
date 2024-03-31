@@ -129,4 +129,22 @@ public class MovieServiceImpl implements MovieService {
             throw new ServiceUnavailableException("Cập nhật phim không thành công");
         }
     }
+
+    @Override
+    public MovieDTO updateMovieState(Long id, MovieState state) throws BaseException {
+        try {
+            Movie movie = movieRepository.findById(id)
+                                         .orElseThrow(() -> new NotFoundException("Không tìm thấy phim theo id: " + id));
+
+            movie.setState(state);
+            movieRepository.save(movie);
+            return movieMapper.toDTO(movie);
+        } catch (NotFoundException e) {
+            log.error(e.toString());
+            throw e;
+        } catch (Exception e) {
+            log.error(e.toString());
+            throw new ServiceUnavailableException("Cập nhật trạng thái phim không thành công");
+        }
+    }
 }
