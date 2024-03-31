@@ -3,6 +3,7 @@ package vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.hcmuaf.fit.cinemix_api.core.handler.domain.HttpResponse;
 
@@ -15,9 +16,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ServiceBusinessException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<HttpResponse> handleServiceBusinessException(ServiceBusinessException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(HttpResponse.fail(ex.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpResponse.fail(ex.getMessage()));
     }
 
     @ExceptionHandler(ServiceUnavailableException.class)
@@ -37,6 +38,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<HttpResponse> handleBindException(BindException ex) {
         StringBuilder message = new StringBuilder();
         ex.getFieldErrors().forEach(fieldError -> message.append(fieldError.getDefaultMessage()).append(". "));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpResponse.fail(message.toString()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<HttpResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        StringBuilder message = new StringBuilder();
+        ex.getBindingResult().getFieldErrors()
+          .forEach(fieldError -> message.append(fieldError.getDefaultMessage()).append(". "));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpResponse.fail(message.toString()));
     }
 
