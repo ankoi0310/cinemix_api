@@ -145,6 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         AppUser appUser =userRepository.findByEmail(email).orElseThrow(
                 ()-> new UsernameNotFoundException("Email does not exist: "+email)
         );
+
         String token = RandomStringUtils.randomAlphabetic(100);
         LocalDateTime expiredDate = LocalDateTime.now().plusMinutes(AppConstant.PASSWORD_RESET_TOKEN_EXPIRED_DATE);
         PasswordResetToken passwordResetToken = PasswordResetToken.builder()
@@ -152,9 +153,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .user(appUser)
                 .expiredDate(expiredDate)
                 .build();
-        passwordResetTokenRepository.save(passwordResetToken);
+        PasswordResetToken availablePasswordResetToken = passwordResetTokenRepository.findByUser(appUser.getId())
+                .orElse(passwordResetToken);
+        if(availablePasswordResetToken.getId() != null )
+        {
+            availablePasswordResetToken.setToken(token);
+            availablePasswordResetToken.setExpiredDate(expiredDate);
+        }
+        passwordResetTokenRepository.save(availablePasswordResetToken);
         //send email
-        mailService.sendResetPasswordEmail(httpServletRequest,passwordResetToken);
+        mailService.sendResetPasswordEmail(httpServletRequest,availablePasswordResetToken);
     }
 
     @Override
@@ -170,6 +178,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         AppUser appUser = passwordResetToken.getUser();
         appUser.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(appUser);
+        passwordResetTokenRepository.delete(passwordResetToken);
     }
 
     @Override

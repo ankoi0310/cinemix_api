@@ -23,4 +23,11 @@ public class PasswordResetTokenRepositoryImpl extends AbstractRepository<Passwor
                 .fetchOne());
 
     }
+
+    @Override
+    public Optional<PasswordResetToken> findByUser(Long id) {
+        return Optional.ofNullable(queryFactory.selectFrom(qPasswordResetToken)
+                .where(qPasswordResetToken.user.id.eq(id))
+                .fetchOne());
+    }
 }

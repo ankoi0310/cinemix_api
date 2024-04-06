@@ -10,4 +10,6 @@ import java.util.UUID;
 @NoRepositoryBean
 public interface PasswordResetTokenRepository extends CustomRepository<PasswordResetToken, Long> {
     Optional<PasswordResetToken> findByToken(String token);
+    Optional<PasswordResetToken> findByUser(Long id);
+
 }
