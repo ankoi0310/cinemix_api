@@ -11,8 +11,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.constants.SecurityConstant;
+import vn.edu.hcmuaf.fit.cinemix_api.utils.DateUtils;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,9 +40,9 @@ public class JwtProvider {
 
         String[] claims = getClaimsFromUser(userDetails);
 
-        long currentTime = System.currentTimeMillis();
-        Date issuedAt = new Date(currentTime);
-        Date expiresAt = new Date(currentTime + expirationTime);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        Date issuedAt = DateUtils.fromLocalDateTime(localDateTime);
+        Date expiresAt = DateUtils.fromLocalDateTime(localDateTime.plusSeconds(expirationTime));
 
         return JWT.create()
                   .withIssuer(company)

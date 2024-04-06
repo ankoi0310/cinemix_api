@@ -39,7 +39,7 @@ public class AppUser extends BaseEntity implements UserDetails {
     @JoinColumn(referencedColumnName = "id")
     private UserInfo userInfo;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "id")
     private AppRole appRole;
 
@@ -72,4 +72,5 @@ public class AppUser extends BaseEntity implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
+
 }

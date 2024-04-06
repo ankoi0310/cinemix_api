@@ -6,6 +6,8 @@ import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.entity.BaseEntity;
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.UserRole;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -20,8 +22,8 @@ public class AppRole extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @OneToOne(mappedBy = "appRole")
-    private AppUser appUser;
+    @OneToMany(mappedBy = "appRole")
+    private List<AppUser> appUsers;
 
     public AppRole(UserRole role) {
         this.role = role;

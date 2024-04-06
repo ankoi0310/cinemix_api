@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -18,12 +17,17 @@ public class VerificationToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private String email;
+    @OneToOne(cascade=CascadeType.ALL, targetEntity = AppUser.class, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, name = "user_id",referencedColumnName = "id")
+    private AppUser user;
 
     @Column(unique = true)
-    private UUID token;
+    private String token;
 
     private LocalDateTime expiredDate;
-    private boolean isExpired;
+
+    public boolean isExpired()
+    {
+        return expiredDate.isBefore(LocalDateTime.now());
+    }
 }

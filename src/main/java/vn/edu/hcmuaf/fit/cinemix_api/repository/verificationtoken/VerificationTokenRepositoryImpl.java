@@ -7,7 +7,6 @@ import vn.edu.hcmuaf.fit.cinemix_api.entity.QVerificationToken;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.VerificationToken;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public class VerificationTokenRepositoryImpl extends AbstractRepository<VerificationToken, Long> implements VerificationTokenRepository {
@@ -18,18 +17,18 @@ public class VerificationTokenRepositoryImpl extends AbstractRepository<Verifica
     }
 
     @Override
-    public Optional<VerificationToken> findByEmail(String email) {
+    public Optional<VerificationToken> findByToken(String token) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(qVerificationToken)
-                .where(qVerificationToken.email.eq(email))
+                .where(qVerificationToken.token.eq(token))
                 .fetchOne());
     }
 
     @Override
-    public Optional<VerificationToken> findByToken(UUID token) {
+    public Optional<VerificationToken> findByUser(Long id) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(qVerificationToken)
-                .where(qVerificationToken.token.eq(token))
+                .where(qVerificationToken.user.id.eq(id))
                 .fetchOne());
     }
 }

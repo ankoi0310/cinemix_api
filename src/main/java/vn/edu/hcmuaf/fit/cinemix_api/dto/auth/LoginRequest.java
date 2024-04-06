@@ -1,13 +1,12 @@
 package vn.edu.hcmuaf.fit.cinemix_api.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.Data;
 
 @Data
 public class LoginRequest {
     @NotBlank
-    private String username;
-
+    private String email;
     @NotBlank
     private String password;
 }

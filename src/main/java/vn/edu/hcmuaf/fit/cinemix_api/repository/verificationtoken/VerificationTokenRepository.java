@@ -5,11 +5,11 @@ import vn.edu.hcmuaf.fit.cinemix_api.core.repository.CustomRepository;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.VerificationToken;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @NoRepositoryBean
 public interface VerificationTokenRepository extends CustomRepository<VerificationToken, Long> {
-    Optional<VerificationToken> findByEmail(String email);
 
-    Optional<VerificationToken> findByToken(UUID token);
+    Optional<VerificationToken> findByToken(String token);
+
+    Optional<VerificationToken> findByUser(Long id);
 }
