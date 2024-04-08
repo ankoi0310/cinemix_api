@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import vn.edu.hcmuaf.fit.cinemix_api.core.handler.failedAttemptHandler.LoginFailureHandler;
 import vn.edu.hcmuaf.fit.cinemix_api.repository.user.UserRepository;
 
 @Configuration
@@ -41,4 +42,8 @@ public class ApplicationConfiguration {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public LoginFailureHandler loginFailureHandler(){ return new LoginFailureHandler();}
+
 }

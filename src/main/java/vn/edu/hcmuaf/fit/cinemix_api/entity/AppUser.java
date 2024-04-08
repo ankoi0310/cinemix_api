@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import vn.edu.hcmuaf.fit.cinemix_api.core.entity.BaseEntity;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,6 +23,9 @@ public class AppUser extends BaseEntity implements UserDetails {
     private String email;
     private String phone;
     private String password;
+    private int failedAttempts;
+    @Column(nullable = true)
+    private LocalDateTime lockedTime;
 
     @Builder.Default
     private Boolean emailVerified = false;

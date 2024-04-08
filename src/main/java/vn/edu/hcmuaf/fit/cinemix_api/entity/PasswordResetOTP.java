@@ -6,18 +6,16 @@ import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.entity.BaseEntity;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="password_reset_token")
+@Table(name="password_reset_OTP")
 @SuperBuilder
-public class PasswordResetToken extends BaseEntity {
-    @Column(unique = true)
-    private String token;
+public class PasswordResetOTP extends BaseEntity {
+    private String OTP;
 
     @OneToOne(targetEntity = AppUser.class, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, name = "user_id")
@@ -25,7 +23,9 @@ public class PasswordResetToken extends BaseEntity {
 
     private LocalDateTime expiredDate;
 
-    public boolean isTokenExpired() {
+    private int failedAttempts = 0;
+
+    public boolean isExpired() {
         return  expiredDate.isBefore(LocalDateTime.now());
     }
 }

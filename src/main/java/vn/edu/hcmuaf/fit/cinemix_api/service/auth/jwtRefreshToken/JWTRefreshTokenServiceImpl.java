@@ -3,7 +3,7 @@ package vn.edu.hcmuaf.fit.cinemix_api.service.auth.jwtRefreshToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.TokenException;
+import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.OTPException;
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.constants.AppConstant;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.AppUser;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.JWTRefreshToken;
@@ -41,7 +41,7 @@ public class JWTRefreshTokenServiceImpl implements JWTRefreshTokenService {
     public JWTRefreshToken verifyExpiration(JWTRefreshToken token) {
         if (token.isExpiredToken()) {
             jwtRefreshTokenRepository.delete(token);
-            throw new TokenException(token.getToken(), "Refresh token was expired. Please make a new signin request");
+            throw new OTPException(token.getToken(), "Refresh token was expired. Please make a new signin request");
         }
         return token;
     }
@@ -50,7 +50,7 @@ public class JWTRefreshTokenServiceImpl implements JWTRefreshTokenService {
     public JWTRefreshToken findByToken(String token) {
         return jwtRefreshTokenRepository.findByToken(token)
                 .map(this::verifyExpiration)
-                .orElseThrow( () -> new TokenException(token, "Token not found"));
+                .orElseThrow( () -> new OTPException(token, "Token not found"));
     }
 
     @Override

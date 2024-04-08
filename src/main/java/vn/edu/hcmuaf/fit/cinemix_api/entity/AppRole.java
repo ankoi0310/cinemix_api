@@ -16,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "app_role")
 public class AppRole extends BaseEntity {
+    @Column(unique = true)
     private String name;
 
     @Transient

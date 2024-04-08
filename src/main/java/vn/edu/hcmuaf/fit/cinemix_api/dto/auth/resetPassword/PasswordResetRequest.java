@@ -3,12 +3,12 @@ package vn.edu.hcmuaf.fit.cinemix_api.dto.auth.resetPassword;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
-public class ResetPasswordRequest {
+public class PasswordResetRequest {
     @NotBlank
-    String token;
+    String email;
+    @NotBlank
+    String OTP;
     @NotBlank
     String newPassword;
 }
