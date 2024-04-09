@@ -7,7 +7,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import vn.edu.hcmuaf.fit.cinemix_api.controller.exceptionHandle.ControllerExceptionHandler;
 import vn.edu.hcmuaf.fit.cinemix_api.core.handler.domain.HttpResponse;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.ForgotPassword.ForgotPasswordRequest;
@@ -68,7 +71,7 @@ public class AuthController extends ControllerExceptionHandler {
     }
 
     @PostMapping("/verifyUser/resendEmail")
-    public ResponseEntity<HttpResponse> resendEmail(@RequestBody VerificationUserRequest request)
+    public ResponseEntity<HttpResponse> resendEmail(@RequestBody VerificationUserRequest request) throws Exception
     {
         authenticationService.resendVerifyUserEmail(request.getEmail());
         return ResponseEntity.ok(HttpResponse.success("OTP was sent to your email"));

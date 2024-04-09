@@ -21,6 +21,6 @@ public interface AuthenticationService extends UserDetailsService {
     void resetPassword(PasswordResetRequest request);
 
     JWTRefreshTokenResponse refreshToken(String token);
-    public void resendVerifyUserEmail(String email);
+    public void resendVerifyUserEmail(String email) throws  Exception;
 
 }

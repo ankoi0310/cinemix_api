@@ -3,10 +3,8 @@ package vn.edu.hcmuaf.fit.cinemix_api.core.handler.failedAttemptHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.MaxFailedAttemptsException;
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.constants.AppConstant;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.AppUser;
 import vn.edu.hcmuaf.fit.cinemix_api.repository.user.UserRepository;
@@ -25,10 +23,6 @@ public class LoginFailureHandler implements ApplicationListener<AuthenticationFa
         {
             return;
         }
-        if(event.getException().getClass().equals(LockedException.class))
-        {
-           log.info("user locked out");
-        }
 
         String email = event.getAuthentication().getName();
 
@@ -36,7 +30,7 @@ public class LoginFailureHandler implements ApplicationListener<AuthenticationFa
         if(user != null)
         {
             user.setFailedAttempts(user.getFailedAttempts()+1);
-            if(user.getFailedAttempts()>= AppConstant.MAX_FAILED_ATTEMPT)
+            if((user.getFailedAttempts())>= AppConstant.MAX_FAILED_ATTEMPT)
             {
                 user.setAccountNonLocked(false);
                 user.setLockedTime(LocalDateTime.now());

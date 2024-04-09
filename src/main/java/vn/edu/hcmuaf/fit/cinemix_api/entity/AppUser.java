@@ -23,7 +23,7 @@ public class AppUser extends BaseEntity implements UserDetails {
     private String email;
     private String phone;
     private String password;
-    private int failedAttempts;
+    private int failedAttempts = 0;
     @Column(nullable = true)
     private LocalDateTime lockedTime;
 

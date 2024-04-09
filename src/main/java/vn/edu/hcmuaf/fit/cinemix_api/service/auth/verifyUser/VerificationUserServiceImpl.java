@@ -5,9 +5,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.AbstractPlatformTransactionManager;
 import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.MaxFailedAttemptsException;
 import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.OTPException;
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.constants.AppConstant;
@@ -55,7 +53,7 @@ public class VerificationUserServiceImpl implements VerificationUserService {
                 .orElseThrow(()-> new UsernameNotFoundException("Email does not exist"));
         if(!StringUtils.equals(verificationUser.getOTP(),request.getOTP()))
         {
-            if((verificationUser.getFailedAttempts()+1)>=AppConstant.MAX_FAILED_ATTEMPT)
+            if((verificationUser.getFailedAttempts()+1) >= AppConstant.MAX_FAILED_ATTEMPT)
             {
                 throw new MaxFailedAttemptsException("Max failed attempts. Please re-send an email to get new OTP");
             }
