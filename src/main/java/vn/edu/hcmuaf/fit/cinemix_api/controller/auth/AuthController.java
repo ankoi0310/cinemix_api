@@ -22,6 +22,8 @@ import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.jwtRefreshToken.JWTRefreshTokenReq
 import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.jwtRefreshToken.JWTRefreshTokenResponse;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.resetPassword.PasswordResetRequest;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.verificationUser.VerificationUserRequest;
+import vn.edu.hcmuaf.fit.cinemix_api.entity.AppUser;
+import vn.edu.hcmuaf.fit.cinemix_api.entity.VerificationUser;
 import vn.edu.hcmuaf.fit.cinemix_api.service.auth.AuthenticationService;
 import vn.edu.hcmuaf.fit.cinemix_api.service.mail.MailService;
 
@@ -72,6 +74,13 @@ public class AuthController extends ControllerExceptionHandler {
 
     @PostMapping("/verifyUser/resendEmail")
     public ResponseEntity<HttpResponse> resendEmail(@RequestBody VerificationUserRequest request) throws Exception
+    {
+        authenticationService.resendVerifyUserEmail(request.getEmail());
+        return ResponseEntity.ok(HttpResponse.success("OTP was sent to your email"));
+    }
+
+    @PostMapping("/verifyUser/resendEmail1")
+    public ResponseEntity<HttpResponse> resendEmail1(@RequestBody VerificationUserRequest request) throws Exception
     {
         authenticationService.resendVerifyUserEmail(request.getEmail());
         return ResponseEntity.ok(HttpResponse.success("OTP was sent to your email"));

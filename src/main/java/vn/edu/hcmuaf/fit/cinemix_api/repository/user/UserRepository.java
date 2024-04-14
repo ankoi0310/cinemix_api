@@ -13,4 +13,6 @@ public interface UserRepository extends CustomRepository<AppUser, Long> {
     Optional<AppUser> findByEmail(String email);
 
     Optional<AppUser> findByPhone(String phone);
+
+    Optional<AppUser> findById(Long id);
 }

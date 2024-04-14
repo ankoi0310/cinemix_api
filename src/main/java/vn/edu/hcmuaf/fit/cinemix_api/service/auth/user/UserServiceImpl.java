@@ -2,7 +2,6 @@ package vn.edu.hcmuaf.fit.cinemix_api.service.auth.user;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,9 +12,14 @@ import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.ResourcesExistExcept
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.constants.AppConstant;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.LoginRequest;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.RegisterRequest;
+import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.RegisterResponse;
+import vn.edu.hcmuaf.fit.cinemix_api.dto.user.UserCreate;
+import vn.edu.hcmuaf.fit.cinemix_api.dto.user.UserDTO;
+import vn.edu.hcmuaf.fit.cinemix_api.dto.user.UserUpdate;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.AppRole;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.AppUser;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.UserInfo;
+import vn.edu.hcmuaf.fit.cinemix_api.mapper.UserMapper;
 import vn.edu.hcmuaf.fit.cinemix_api.repository.approle.AppRoleRepository;
 import vn.edu.hcmuaf.fit.cinemix_api.repository.user.UserRepository;
 
@@ -29,6 +33,8 @@ public class UserServiceImpl implements  UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final AppRoleRepository appRoleRepository;
+
+    private final UserMapper userMapper;
 
     @Override
     public AppUser createNewUser(RegisterRequest request) throws Exception {
@@ -121,6 +127,68 @@ public class UserServiceImpl implements  UserService {
         return appUser;
     }
 
+    @Override
+    public UserDTO createUser(UserCreate request) throws Exception {
+        if(StringUtils.isBlank(request.getEmail()))
+        {
+            throw new BadRequestException("Email could not be null");
+        }
+
+        if(StringUtils.isBlank(request.getPhoneNumber()))
+        {
+            throw new BadRequestException("Phone could not be null");
+        }
+
+        Optional<AppUser> appUserByPhone = userRepository.findByPhone(request.getPhoneNumber());
+        Optional<AppUser> appUserByEmail = userRepository.findByEmail(request.getEmail());
+        if (appUserByEmail.isPresent()) {
+            throw new ResourcesExistException("Email " +request.getEmail());
+        }
+
+        if (appUserByPhone.isPresent()) {
+            throw new ResourcesExistException("Phone "+request.getPhoneNumber());
+        }
+        AppRole defaultAppRole = appRoleRepository.findByRole(AppConstant.DEFAULT_ROLE)
+                .orElseThrow( () ->  new NotFoundException("Default role not found"));
+
+        UserInfo userInfo = UserInfo.builder()
+                .fullName(request.getFullName())
+                .birthday(request.getBirthday())
+                .avatar(request.getAvatar())
+                .build();
+        AppUser newUser = AppUser.builder()
+                .email(request.getEmail())
+                .phone(request.getPhoneNumber())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .userInfo(userInfo)
+                .appRole(defaultAppRole)
+                .build();
+        userRepository.save(newUser);
+
+        UserDTO response = userMapper.toDTO(newUser);
+        return response;
+    }
+
+    @Override
+    public UserDTO updateUserById(Long id, UserUpdate userUpdate) throws Exception {
+        AppUser user = userRepository.findById(id)
+                .orElseThrow(()-> new BadRequestException("Not found user by id "+ id));
+        UserInfo userInfo = user.getUserInfo();
+        userInfo.setAvatar(userUpdate.getAvatar());
+        userInfo.setBirthday(userUpdate.getBirthday());
+        userInfo.setFullName(userUpdate.getFullName());
+        user.setUserInfo(userInfo);
+        userRepository.save(user);
+        UserDTO response = userMapper.toDTO(user);
+        return response;
+    }
+
+    @Override
+    public void deleteById(Long id) throws Exception {
+        AppUser user = userRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException("NOt found user by id:"+id));
+        userRepository.delete(user);
+    }
 
 
 }

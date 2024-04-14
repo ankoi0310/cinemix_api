@@ -26,6 +26,9 @@ import vn.edu.hcmuaf.fit.cinemix_api.service.auth.user.UserService;
 import vn.edu.hcmuaf.fit.cinemix_api.service.auth.verifyUser.VerificationUserService;
 import vn.edu.hcmuaf.fit.cinemix_api.service.mail.MailService;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -48,7 +51,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // create verification token
         VerificationUser verificationUser = verificationUserService.create(newUser);
         // send email verification
-        mailService.sendVerifyEmail(verificationUser);
+//        mailService.sendVerifyEmail(verificationUser);
         return RegisterResponse.builder()
                                .username(newUser.getUsername())
                                .build();
@@ -56,14 +59,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-       AppUser appUser = userService.login(loginRequest);
+        AppUser appUser = userService.login(loginRequest);
         String jwtToken = jwtProvider.generateToken(appUser);
         JWTRefreshToken refreshToken = jwtRefreshTokenService.createOrUpdate(appUser);
+
+        DateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String birthdayStr = simpleDateFormat.format(appUser.getUserInfo().getBirthday());
 
         return LoginResponse.builder()
                 .email(appUser.getEmail())
                 .accessToken(jwtToken)
                 .refreshToken(refreshToken.getToken())
+                .fullname(appUser.getUserInfo().getFullName())
+                .birthday(birthdayStr)
                 .build();
     }
 
@@ -81,7 +89,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         AppUser appUser =userService.findByEmail(email);
         PasswordResetOTP passwordResetOTP = passwordResetOTPService.create(appUser);
         //send email
-        mailService.sendResetPasswordEmail(passwordResetOTP);
+//        mailService.sendResetPasswordEmail(passwordResetOTP);
     }
 
     @Override

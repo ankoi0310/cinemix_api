@@ -39,4 +39,13 @@ public class UserRepositoryImpl extends AbstractRepository<AppUser, Long> implem
                 .where(qAppUser.phone.eq(phone))
                 .fetchOne());
     }
+
+
+    @Override
+    public Optional<AppUser> findById(Long id) {
+        return Optional.ofNullable(queryFactory
+                .selectFrom(qAppUser)
+                .where(qAppUser.id.eq(id))
+                .fetchOne());
+    }
 }
