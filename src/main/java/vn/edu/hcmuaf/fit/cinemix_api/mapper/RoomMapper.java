@@ -6,9 +6,12 @@ import vn.edu.hcmuaf.fit.cinemix_api.entity.Room;
 
 import java.util.List;
 
-@Mapper
+@Mapper(
+        uses = {SeatRowMapper.class}
+)
 public interface RoomMapper {
     @Named("toRoomDTO")
+    @Mapping(target = "rows", qualifiedByName = "toSeatRowDTOs")
     RoomDTO toRoomDTO(Room room);
 
     @Named("toRoomDTOs")
