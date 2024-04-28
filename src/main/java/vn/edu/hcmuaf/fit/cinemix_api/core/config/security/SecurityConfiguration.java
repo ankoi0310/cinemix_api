@@ -11,9 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.*;
 import vn.edu.hcmuaf.fit.cinemix_api.core.config.jwt.JwtAuthenticationFilter;
 
 import java.util.List;
@@ -33,8 +31,9 @@ public class SecurityConfiguration {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorizeRequests -> {
-                authorizeRequests.requestMatchers("/auth/**").permitAll();
-                authorizeRequests.anyRequest().authenticated();
+                authorizeRequests.requestMatchers("/**").permitAll();
+//                authorizeRequests.requestMatchers("/auth/**").permitAll();
+//                authorizeRequests.anyRequest().authenticated();
             })
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
