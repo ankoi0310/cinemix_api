@@ -6,9 +6,12 @@ import vn.edu.hcmuaf.fit.cinemix_api.entity.Theater;
 
 import java.util.List;
 
-@Mapper
+@Mapper(
+        uses = {RoomMapper.class}
+)
 public interface TheaterMapper {
     @Named("toTheaterDTO")
+    @Mapping(target = "rooms", qualifiedByName = "toRoomDTOs")
     @Mapping(target = "address", source = "address.fullAddress")
     @Mapping(target = "state", source = "state.description")
     TheaterDTO toTheaterDTO(Theater theater);

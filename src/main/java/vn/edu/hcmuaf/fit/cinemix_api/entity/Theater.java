@@ -6,6 +6,8 @@ import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.entity.BaseEntity;
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.TheaterState;
 
+import java.util.List;
+
 @Getter
 @Setter
 @SuperBuilder
@@ -23,6 +25,9 @@ public class Theater extends BaseEntity {
 
     private String image;
 
-    @Convert(converter = TheaterState.TheaterStateConverter.class)
+    @Convert(converter = TheaterState.Converter.class)
     private TheaterState state;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "theater")
+    private List<Room> rooms;
 }

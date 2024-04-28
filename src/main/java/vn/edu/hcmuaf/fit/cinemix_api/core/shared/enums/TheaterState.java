@@ -27,7 +27,7 @@ public enum TheaterState {
         return null;
     }
 
-    public static class TheaterStateConverter implements AttributeConverter<TheaterState, String> {
+    public static class Converter implements AttributeConverter<TheaterState, String> {
         @Override
         public String convertToDatabaseColumn(TheaterState theaterState) {
             return theaterState.getValue();

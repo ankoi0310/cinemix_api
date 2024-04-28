@@ -3,6 +3,9 @@ package vn.edu.hcmuaf.fit.cinemix_api.dto.theater;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.dto.BaseDTO;
+import vn.edu.hcmuaf.fit.cinemix_api.dto.room.RoomDTO;
+
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -14,4 +17,6 @@ public class TheaterDTO extends BaseDTO {
     private String hotline;
     private String image;
     private String state;
+
+    private List<RoomDTO> rooms;
 }
