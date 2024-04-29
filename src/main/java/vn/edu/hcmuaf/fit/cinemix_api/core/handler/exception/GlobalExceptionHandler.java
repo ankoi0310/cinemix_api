@@ -1,5 +1,6 @@
 package vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -54,6 +55,12 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<HttpResponse> handleBadRequestException(BadRequestException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpResponse.fail(ex.getMessage()));
+    }
+
+    @ExceptionHandler(JwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<HttpResponse> handleJWTVerificationException(JwtException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(HttpResponse.fail(ex.getMessage()));
     }
 
     @ExceptionHandler(UnauthorizedException.class)

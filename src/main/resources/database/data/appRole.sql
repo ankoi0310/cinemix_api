@@ -1,1 +1,5 @@
-INSERT INTO app_role (`name`) values ("ADMIN"),("MANAGER"),("EMPLOYEE"),("CUSTOMER");
+INSERT INTO app_role (name)
+VALUES ('ADMIN'),
+       ('MANAGER'),
+       ('EMPLOYEE'),
+       ('MEMBER');

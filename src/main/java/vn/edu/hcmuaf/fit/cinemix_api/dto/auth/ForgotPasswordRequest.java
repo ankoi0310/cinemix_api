@@ -1,4 +1,4 @@
-package vn.edu.hcmuaf.fit.cinemix_api.dto.auth.ForgotPassword;
+package vn.edu.hcmuaf.fit.cinemix_api.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

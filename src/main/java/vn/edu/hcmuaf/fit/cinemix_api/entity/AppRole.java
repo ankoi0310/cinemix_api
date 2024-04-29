@@ -16,26 +16,11 @@ import java.util.List;
 @Entity
 @Table(name = "app_role")
 public class AppRole extends BaseEntity {
-    private String name;
-
-    @Transient
+    @Column(unique = true)
+    @Convert(converter = UserRole.Converter.class)
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private UserRole name;
 
     @OneToMany(mappedBy = "appRole")
     private List<AppUser> appUsers;
-
-    public AppRole(UserRole role) {
-        this.role = role;
-        this.name = role.name();
-    }
-
-    public UserRole getRole() {
-        return UserRole.valueOf(name);
-    }
-
-    public void setRole(UserRole role) {
-        this.role = role;
-        this.name = role.name();
-    }
 }

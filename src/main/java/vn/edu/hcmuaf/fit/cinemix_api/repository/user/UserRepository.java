@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface UserRepository extends CustomRepository<AppUser, Long> {
-    Optional<AppUser> findByEmailOrPhone(String email, String phone);
+    Optional<AppUser> findByUsername(String value);
 
     Optional<AppUser> findByEmail(String email);
 

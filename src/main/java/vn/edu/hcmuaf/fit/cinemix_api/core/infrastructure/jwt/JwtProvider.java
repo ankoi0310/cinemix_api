@@ -1,108 +1,99 @@
 package vn.edu.hcmuaf.fit.cinemix_api.core.infrastructure.jwt;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.constants.SecurityConstant;
-import vn.edu.hcmuaf.fit.cinemix_api.utils.DateUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import javax.crypto.SecretKey;
 import java.util.Date;
-import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.stream;
 
 @Component
 public class JwtProvider {
-    @Value("${spring.application.name}")
+    @Value("${app.name}")
     private String applicationName;
 
-    @Value("${spring.application.company}")
+    @Value("${app.company}")
     private String company;
 
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration.time}")
-    private long expirationTime;
+    @Value("${jwt.expiration.access-token}")
+    private long accessTokenExpirationTime;
 
-    public String generateToken(UserDetails userDetails) {
+    @Value("${jwt.expiration.refresh-token}")
+    private long refreshTokenExpirationTime;
 
-        String[] claims = getClaimsFromUser(userDetails);
+    public String generateAccessToken(Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        LocalDateTime localDateTime = LocalDateTime.now();
-        Date issuedAt = DateUtils.fromLocalDateTime(localDateTime);
-        Date expiresAt = DateUtils.fromLocalDateTime(localDateTime.plusSeconds(expirationTime));
+        String[] authorities = getAuthorities(userDetails);
 
-        return JWT.create()
-                  .withIssuer(company)
-                  .withAudience(applicationName)
-                  .withSubject(userDetails.getUsername())
-                  .withArrayClaim(SecurityConstant.AUTHORITIES, claims)
-                  .withIssuedAt(issuedAt)
-                  .withExpiresAt(expiresAt)
-                  .sign(Algorithm.HMAC512(secret));
+
+        return getJwtBuilder(userDetails.getUsername(), accessTokenExpirationTime)
+                .claim(SecurityConstant.AUTHORITIES, authorities)
+                .compact();
     }
 
-    private JWTVerifier getJwtVerifier() {
-        JWTVerifier verifier;
-        try {
-            Algorithm algorithm = Algorithm.HMAC512(secret);
-            verifier = JWT.require(algorithm).withIssuer(company).build();
-        } catch (JWTVerificationException ex) {
-            throw new JWTVerificationException(SecurityConstant.TOKEN_CANNOT_BE_VERIFIED);
-        }
-        return verifier;
+    public String generateRefreshToken(Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        return getJwtBuilder(userDetails.getUsername(), refreshTokenExpirationTime)
+                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpirationTime))
+                .compact();
     }
 
-    private <T> T decodeJWT(
-            String token,
-            Function<DecodedJWT, T> resolver
-    ) {
-        JWTVerifier verifier = getJwtVerifier();
-        return resolver.apply(verifier.verify(token));
+    private SecretKey getSecretKey() {
+        byte[] keyBytes = secret.getBytes();
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private String[] getClaimsFromUser(UserDetails userDetails) {
-        List<String> authorities = new ArrayList<>();
-        for (GrantedAuthority grantedAuthority : userDetails.getAuthorities()) {
-            authorities.add(grantedAuthority.getAuthority());
-        }
-        return authorities.toArray(new String[0]);
+    private JwtBuilder getJwtBuilder(String username, long expirationTime) {
+        Date issuedAt = new Date();
+        Date expiration = new Date(issuedAt.getTime() + expirationTime);
+
+        return Jwts.builder()
+                   .subject(username)
+                   .issuer(String.format("%s - %s", applicationName, company))
+                   .issuedAt(issuedAt)
+                   .expiration(expiration)
+                   .signWith(getSecretKey());
     }
 
-    public String getUsername(String token) {
-        return decodeJWT(token, DecodedJWT::getSubject);
-    }
-
-    public boolean isTokenValid(
-            String token,
-            UserDetails userDetails
-    ) {
-        String username = userDetails.getUsername();
-        return !isTokenExpired(token) && username.equals(getUsername(token));
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        String username = getUsernameFromJWT(token);
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
-        return getExpiration(token).before(new Date());
+        Date expiration = getClaims(token).getExpiration();
+        return expiration.before(new Date());
     }
 
-    private Date getExpiration(String token) {
-        return decodeJWT(token, DecodedJWT::getExpiresAt);
+    private Claims getClaims(String token) {
+        return Jwts.parser()
+                   .verifyWith(getSecretKey())
+                   .build().parseSignedClaims(token).getPayload();
     }
 
-    public List<GrantedAuthority> getAuthorities(String token) {
-        String[] claims = decodeJWT(token, jwt -> jwt.getClaim(SecurityConstant.AUTHORITIES).asArray(String.class));
-        return stream(claims).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    public String getUsernameFromJWT(String token) {
+        Claims claims = getClaims(token);
+        return claims.getSubject();
+    }
+
+    public String[] getAuthoritiesFromJWT(String token) {
+        Claims claims = getClaims(token);
+        return (String[]) claims.get(SecurityConstant.AUTHORITIES);
+    }
+
+    private String[] getAuthorities(UserDetails userDetails) {
+        return userDetails.getAuthorities()
+                          .stream()
+                          .map(grantedAuthority -> "ROLE_" + grantedAuthority.getAuthority())
+                          .toArray(String[]::new);
     }
 }
