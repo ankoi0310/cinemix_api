@@ -11,26 +11,17 @@ import java.util.Optional;
 
 @Repository
 public class AppRoleRepositoryImpl extends AbstractRepository<AppRole, Long> implements AppRoleRepository {
-    private final QAppRole qEntity = QAppRole.appRole;
+    private final QAppRole qAppRole = QAppRole.appRole;
 
     protected AppRoleRepositoryImpl(EntityManager entityManager) {
         super(AppRole.class, entityManager);
     }
 
     @Override
-    public Optional<AppRole> findByName(String name) {
-        return Optional.ofNullable(queryFactory
-                .selectFrom(qEntity)
-                .where(qEntity.name.eq(name))
-                .fetchOne()
-        );
-    }
-
-    @Override
     public Optional<AppRole> findByRole(UserRole role) {
         return Optional.ofNullable(queryFactory
-                .selectFrom(qEntity)
-                .where(qEntity.name.eq(role.name()))
+                .selectFrom(qAppRole)
+                .where(qAppRole.role.eq(role))
                 .fetchOne()
         );
     }

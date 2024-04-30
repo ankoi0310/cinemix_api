@@ -3,7 +3,9 @@ package vn.edu.hcmuaf.fit.cinemix_api.repository.otp;
 import jakarta.persistence.EntityManager;
 import org.springframework.stereotype.Repository;
 import vn.edu.hcmuaf.fit.cinemix_api.core.repository.AbstractRepository;
+import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.otp.OTPState;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.OTP;
+import vn.edu.hcmuaf.fit.cinemix_api.entity.QOTP;
 
 import java.util.Optional;
 
@@ -29,5 +31,14 @@ public class OTPRepositoryImpl extends AbstractRepository<OTP, Long> implements 
                 .selectFrom(qOTP)
                 .where(qOTP.email.eq(email))
                 .fetchOne());
+    }
+
+    @Override
+    public void delete() {
+        queryFactory
+                .delete(qOTP)
+                .where(qOTP.state.eq(OTPState.EXPIRED)
+                                 .or(qOTP.state.eq(OTPState.VERIFIED)))
+                .execute();
     }
 }

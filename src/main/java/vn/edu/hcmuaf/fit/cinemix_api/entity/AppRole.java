@@ -16,10 +16,9 @@ import java.util.List;
 @Entity
 @Table(name = "app_role")
 public class AppRole extends BaseEntity {
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     @Convert(converter = UserRole.Converter.class)
-    @Enumerated(EnumType.STRING)
-    private UserRole name;
+    private UserRole role;
 
     @OneToMany(mappedBy = "appRole")
     private List<AppUser> appUsers;

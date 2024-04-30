@@ -11,4 +11,6 @@ public interface OTPRepository extends CustomRepository<OTP, Long> {
     Optional<OTP> findByCode(String code);
 
     Optional<OTP> findByEmail(String email);
+
+    void delete();
 }

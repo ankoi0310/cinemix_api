@@ -15,21 +15,27 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "movie")
+@Table(name = "otp")
 public class OTP extends BaseEntity {
     private String code;
     private String email;
 //    private String phone;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = OTPType.Converter.class)
     private OTPType type;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = OTPState.Converter.class)
     private OTPState state;
 
     private LocalDateTime sentAt;
 
-    private LocalDateTime verifiedAt;
-
     private LocalDateTime expiredAt;
+
+    private LocalDateTime tryAgainAt;
+
+    @Builder.Default
+    private int failedAttempt = 0;
+
+    @Builder.Default
+    private int resendCount = 0;
 }

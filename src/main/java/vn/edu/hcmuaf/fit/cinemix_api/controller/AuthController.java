@@ -9,6 +9,7 @@ import vn.edu.hcmuaf.fit.cinemix_api.core.handler.domain.HttpResponse;
 import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.BaseException;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.*;
 import vn.edu.hcmuaf.fit.cinemix_api.service.auth.AuthenticationService;
+import vn.edu.hcmuaf.fit.cinemix_api.service.otp.OTPService;
 
 @Slf4j
 @RestController
@@ -16,11 +17,12 @@ import vn.edu.hcmuaf.fit.cinemix_api.service.auth.AuthenticationService;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationService authenticationService;
+    private final OTPService otpService;
 
     @PostMapping("/register")
-    public ResponseEntity<HttpResponse> register(@RequestBody RegisterRequest request) throws Exception {
-        RegisterResponse response = authenticationService.register(request);
-        return ResponseEntity.ok(HttpResponse.success(response, "Đăng ký thành công!"));
+    public ResponseEntity<HttpResponse> register(@RequestBody RegisterRequest request) throws BaseException {
+        authenticationService.register(request);
+        return ResponseEntity.ok(HttpResponse.success("Đăng ký thành công!"));
     }
 
     @PostMapping("/login")
@@ -35,13 +37,18 @@ public class AuthController {
             @RequestBody ForgotPasswordRequest request
     ) throws BaseException {
         authenticationService.forgotPassword(request.getEmail());
-        return ResponseEntity.ok(HttpResponse.success("Token sent via email"));
+        return ResponseEntity.ok(HttpResponse.success("Vui lòng kiểm tra email để lấy mã OTP!"));
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<HttpResponse> verifyOTP(@RequestParam String email, @RequestParam String code) throws BaseException {
+        otpService.verifyOTP(email, code);
+        return ResponseEntity.ok(HttpResponse.success("Xác thực OTP thành công!"));
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<HttpResponse> resetPassword(@RequestBody ResetPasswordRequest request) throws BaseException {
-        authenticationService.resetPassword(request.getOtpCode(), request.getNewPassword());
+        authenticationService.resetPassword(request);
         return ResponseEntity.ok(HttpResponse.success("Reset password successfully"));
     }
-
 }

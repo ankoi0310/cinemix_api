@@ -16,12 +16,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(HttpResponse.fail(ex.getMessage()));
     }
 
-    @ExceptionHandler(ServiceBusinessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<HttpResponse> handleServiceBusinessException(ServiceBusinessException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpResponse.fail(ex.getMessage()));
-    }
-
     @ExceptionHandler(ServiceUnavailableException.class)
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     public ResponseEntity<HttpResponse> handleServiceUnavailableException(ServiceUnavailableException ex) {
@@ -79,5 +73,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<HttpResponse> handleNotFoundException(NotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(HttpResponse.fail(ex.getMessage()));
+    }
+
+    @ExceptionHandler(TooManyRequestException.class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public ResponseEntity<HttpResponse> handleTooManyRequestException(TooManyRequestException ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(HttpResponse.fail(ex.getMessage()));
+    }
+
+    @ExceptionHandler(GoneException.class)
+    @ResponseStatus(HttpStatus.GONE)
+    public ResponseEntity<HttpResponse> handleGoneException(GoneException ex) {
+        return ResponseEntity.status(HttpStatus.GONE).body(HttpResponse.fail(ex.getMessage()));
     }
 }
