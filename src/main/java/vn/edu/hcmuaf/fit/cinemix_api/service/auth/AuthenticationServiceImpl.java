@@ -67,7 +67,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             userRepository.save(newUser);
 
             // Create OTP
-            OTP otp = otpService.generateOTP(newUser.getEmail(), OTPType.REGISTER);
+            OTP otp = otpService.generateOTP(newUser.getEmail(), OTPType.VERIFY_EMAIL);
 
             // Send OTP
             mailService.sendOTP(newUser.getEmail(), otp.getCode(), otp.getType());
@@ -78,6 +78,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             log.error(e.toString());
             throw new ServiceUnavailableException("Không thể tạo tài khoản mới");
         }
+    }
+
+    @Override
+    public void verifyRegister(String code) throws BaseException {
+        OTP otp = otpService.getOTPByCode(code);
+        if (otp.getType() != OTPType.VERIFY_EMAIL) {
+            throw new BadRequestException("Mã OTP không hợp lệ");
+        }
+
+        AppUser appUser = userRepository.findByEmail(otp.getEmail())
+                                        .orElseThrow(() -> new NotFoundException("Tài khoản không tồn tại"));
+
+        appUser.setEmailVerified(true);
+        appUser.setEnabled(true);
+        userRepository.save(appUser);
     }
 
     @Override

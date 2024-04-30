@@ -3,8 +3,9 @@ package vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.otp;
 import jakarta.persistence.AttributeConverter;
 
 public enum OTPType {
-    REGISTER,
-    FORGOT_PASSWORD;
+    VERIFY_EMAIL,
+    VERIFY_PHONE,
+    RESET_PASSWORD;
 
     public static class Converter implements AttributeConverter<OTPType, String> {
         @Override

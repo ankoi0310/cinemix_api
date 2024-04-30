@@ -23,8 +23,9 @@ public class MailServiceImpl implements MailService {
 
     private final String NOREPLY_NAME = "Cinemix";
     private final String SUPPORT_NAME = "Cinemix Support";
-    private final String VERIFICATION_SUBJECT = "Cinemix - Xác thực tài khoản";
-    private final String FORGOT_PASSWORD_SUBJECT = "Cinemix - Quên mật khẩu";
+    private final String VERIFY_EMAIL_SUBJECT = "Cinemix - Xác thực tài khoản";
+    private final String VERIFY_PHONE_SUBJECT = "Cinemix - Xác thực tài khoản";
+    private final String RESET_PASSWORD_SUBJECT = "Cinemix - Quên mật khẩu";
 
     @Async("sendOTP")
     @Override
@@ -32,8 +33,9 @@ public class MailServiceImpl implements MailService {
     public void sendOTP(String email, String code, OTPType type) throws BaseException {
         try {
             String subject = switch (type) {
-                case REGISTER -> VERIFICATION_SUBJECT;
-                case FORGOT_PASSWORD -> FORGOT_PASSWORD_SUBJECT;
+                case VERIFY_EMAIL -> VERIFY_EMAIL_SUBJECT;
+                case VERIFY_PHONE -> VERIFY_PHONE_SUBJECT;
+                case RESET_PASSWORD -> RESET_PASSWORD_SUBJECT;
             };
             String from = NOREPLY_ADDRESS;
             String name = NOREPLY_NAME;

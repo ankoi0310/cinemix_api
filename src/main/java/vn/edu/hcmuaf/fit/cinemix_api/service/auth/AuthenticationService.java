@@ -7,6 +7,8 @@ import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.*;
 public interface AuthenticationService extends UserDetailsService {
     void register(RegisterRequest request) throws BaseException;
 
+    void verifyRegister(String code) throws BaseException;
+
     LoginResponse login(LoginRequest loginRequest) throws BaseException;
 
     void forgotPassword(String email) throws BaseException;

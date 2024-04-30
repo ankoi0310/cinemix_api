@@ -11,7 +11,7 @@ public interface OTPService {
 
     OTP getOTPByCode(String code) throws BaseException;
 
-    void verifyOTP(String email, String code) throws BaseException;
+    void verifyOTP(String code) throws BaseException;
 
     void deleteOTP() throws BaseException;
 }

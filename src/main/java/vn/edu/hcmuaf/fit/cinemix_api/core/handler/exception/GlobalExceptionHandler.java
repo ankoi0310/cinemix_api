@@ -10,10 +10,18 @@ import vn.edu.hcmuaf.fit.cinemix_api.core.handler.domain.HttpResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<HttpResponse> handleException() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body(HttpResponse.fail("Máy chủ đang gặp sự cố. Vui lòng thử lại sau."));
+    }
+
     @ExceptionHandler(RuntimeException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<HttpResponse> handleRuntimeException(RuntimeException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(HttpResponse.fail(ex.getMessage()));
+    public ResponseEntity<HttpResponse> handleRuntimeException() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body(HttpResponse.fail("Máy chủ đang gặp sự cố. Vui lòng thử lại sau."));
     }
 
     @ExceptionHandler(ServiceUnavailableException.class)

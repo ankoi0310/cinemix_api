@@ -30,12 +30,4 @@ public class OTP extends BaseEntity {
     private LocalDateTime sentAt;
 
     private LocalDateTime expiredAt;
-
-    private LocalDateTime tryAgainAt;
-
-    @Builder.Default
-    private int failedAttempt = 0;
-
-    @Builder.Default
-    private int resendCount = 0;
 }
