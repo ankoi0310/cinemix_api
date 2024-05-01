@@ -1,19 +1,13 @@
 package vn.edu.hcmuaf.fit.cinemix_api.dto.movie;
 
+import jakarta.persistence.Convert;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
-import vn.edu.hcmuaf.fit.cinemix_api.dto.genre.GenreDTO;
-
-import java.util.Date;
-import java.util.List;
+import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.movie.MovieState;
 
 @Data
 public class MovieSearch {
-    private String title;
-    private List<GenreDTO> genres;
-    private String director;
-    private List<String> actors;
+    private String name;
 
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private Date releaseDate;
+    @Convert(converter = MovieState.Converter.class)
+    private MovieState state;
 }

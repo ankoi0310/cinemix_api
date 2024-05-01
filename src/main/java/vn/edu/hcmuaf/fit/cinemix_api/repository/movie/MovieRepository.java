@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface MovieRepository extends CustomRepository<Movie, Long> {
     List<Movie> search(MovieSearch movieSearch);
 
-    Optional<Movie> findByTitle(String title);
+    Optional<Movie> findByName(String title);
 }
