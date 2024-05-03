@@ -1,8 +1,6 @@
 package vn.edu.hcmuaf.fit.cinemix_api.dto.movie;
 
 import com.fasterxml.jackson.annotation.*;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.dto.BaseDTO;
@@ -33,8 +31,7 @@ public class MovieDTO extends BaseDTO {
     private String country;
     private String language;
     private String localizations;
-
-    @Enumerated(EnumType.STRING)
+    private String format;
     private MovieRating rating;
 
     private String posterUrl;

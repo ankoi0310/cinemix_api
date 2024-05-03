@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.entity.BaseEntity;
-import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.movie.MovieRating;
-import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.movie.MovieState;
+import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.movie.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -42,6 +41,9 @@ public class Movie extends BaseEntity {
     private String country; // USA, UK, France, ...
     private String language; // English, French, ...
     private String localizations; // Phụ đề Tiếng Việt, Lồng Tiếng Việt, ...
+
+    @Convert(converter = MovieFormat.Converter.class)
+    private MovieFormat format;
 
     @Enumerated(EnumType.STRING)
     private MovieRating rating;

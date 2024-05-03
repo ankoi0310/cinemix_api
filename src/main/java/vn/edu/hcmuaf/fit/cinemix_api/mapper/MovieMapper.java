@@ -11,6 +11,7 @@ import java.util.List;
 )
 public interface MovieMapper {
     @Named("toMovieDTO")
+    @Mapping(target = "format", source = "format.value")
     MovieDTO toMovieDTO(Movie movie);
 
     @Named("toMovieEntity")

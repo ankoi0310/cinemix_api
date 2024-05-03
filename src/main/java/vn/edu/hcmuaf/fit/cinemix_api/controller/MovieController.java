@@ -23,7 +23,7 @@ public class MovieController {
     private final MovieService movieService;
 
     @GetMapping("/search")
-    public ResponseEntity<HttpResponse> searchMovies(@Valid MovieSearch movieSearch) throws BaseException {
+    public ResponseEntity<HttpResponse> searchMovies(MovieSearch movieSearch) throws BaseException {
         List<MovieDTO> movies = movieService.searchMovies(movieSearch);
         return ResponseEntity.ok(HttpResponse.success(movies, "Tìm kiếm phim thành công!"));
     }

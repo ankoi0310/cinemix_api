@@ -22,4 +22,7 @@ VALUES ('Hành động', 'Phim có nhiều cảnh hành động, bạo lực, v�
        ('Cổ trang', 'Diễn ra trong một thời kỳ lịch sử hoặc trong một nền văn hóa cổ đại.'),
        ('Gia đình', 'Dành cho công chúng mọi lứa tuổi, thường có nội dung giáo dục và giải trí cho cả gia đình.'),
        ('Lịch sử', 'Kể về các sự kiện lịch sử quan trọng hoặc các nhân vật lịch sử nổi tiếng.'),
-       ('Chính kịch', 'Có nội dung nặng nề và sâu sắc, thường khám phá về con người và xã hội.');
+       ('Chính kịch', 'Có nội dung nặng nề và sâu sắc, thường khám phá về con người và xã hội.'),
+       ('Tình cảm', 'Tập trung vào các mối quan hệ tình cảm giữa các nhân vật chính, thường có yếu tố lãng mạn và tình yêu.'),
+       ('Học đường', 'Diễn ra trong môi trường học đường, thường xoay quanh các mối quan hệ và cuộc sống của học sinh.'),
+       ('Tâm linh', 'Tập trung vào các yếu tố tâm linh, tôn giáo và tâm hồn, thường khám phá về sự tin tưởng và tìm kiếm ý nghĩa cuộc sống.');
