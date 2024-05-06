@@ -1,5 +1,6 @@
 package vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception;
 
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -9,16 +10,17 @@ import vn.edu.hcmuaf.fit.cinemix_api.core.handler.domain.HttpResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<HttpResponse> handleRuntimeException(RuntimeException ex) {
+    public ResponseEntity<HttpResponse> handleException(Exception ex) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(HttpResponse.fail(ex.getMessage()));
     }
 
-    @ExceptionHandler(ServiceBusinessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<HttpResponse> handleServiceBusinessException(ServiceBusinessException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpResponse.fail(ex.getMessage()));
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ResponseEntity<HttpResponse> handleRuntimeException() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body(HttpResponse.fail("Máy chủ đang gặp sự cố. Vui lòng thử lại sau."));
     }
 
     @ExceptionHandler(ServiceUnavailableException.class)
@@ -56,6 +58,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(HttpResponse.fail(ex.getMessage()));
     }
 
+    @ExceptionHandler(JwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<HttpResponse> handleJWTVerificationException(JwtException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(HttpResponse.fail(ex.getMessage()));
+    }
+
     @ExceptionHandler(UnauthorizedException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<HttpResponse> handleUnauthorizedException(UnauthorizedException ex) {
@@ -72,5 +80,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<HttpResponse> handleNotFoundException(NotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(HttpResponse.fail(ex.getMessage()));
+    }
+
+    @ExceptionHandler(TooManyRequestException.class)
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    public ResponseEntity<HttpResponse> handleTooManyRequestException(TooManyRequestException ex) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(HttpResponse.fail(ex.getMessage()));
+    }
+
+    @ExceptionHandler(GoneException.class)
+    @ResponseStatus(HttpStatus.GONE)
+    public ResponseEntity<HttpResponse> handleGoneException(GoneException ex) {
+        return ResponseEntity.status(HttpStatus.GONE).body(HttpResponse.fail(ex.getMessage()));
     }
 }

@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.entity.BaseEntity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -20,7 +20,7 @@ public class UserInfo extends BaseEntity {
     private Boolean gender;
 
     @Temporal(TemporalType.DATE)
-    private Date birthday;
+    private LocalDate birthday;
     private String avatar;
 
     @OneToOne(mappedBy = "userInfo")

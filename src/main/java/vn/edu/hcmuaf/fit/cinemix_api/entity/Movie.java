@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.entity.BaseEntity;
-import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.MovieState;
+import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.movie.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -17,31 +17,42 @@ import java.util.List;
 @Entity
 @Table(name = "movie")
 public class Movie extends BaseEntity {
-    private String title;
+    private String name;
 
-    @ManyToMany
+    @Column(columnDefinition = "LONGTEXT")
+    private String description;
+
+    private String directors;
+    private String actors;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "movie_genre",
-            joinColumns = @JoinColumn(name = "movie_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id")
+            joinColumns = @JoinColumn(name = "movie_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
     private List<Genre> genres;
 
-    private String synopsis;
-    private String description;
-    private String director;
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> actors;
-
-    private Integer duration;
-
     @Temporal(TemporalType.DATE)
-    private Date releaseDate;
+    private LocalDate releasedDate;
+
+    private int duration;
+    private String country; // USA, UK, France, ...
+    private String language; // English, French, ...
+    private String localizations; // Phụ đề Tiếng Việt, Lồng Tiếng Việt, ...
+
+    @Convert(converter = MovieFormat.Converter.class)
+    private MovieFormat format;
+
+    @Enumerated(EnumType.STRING)
+    private MovieRating rating;
 
     private String posterUrl;
     private String trailerUrl;
 
-    @Enumerated(EnumType.STRING)
+    @Convert(converter = MovieState.Converter.class)
     private MovieState state;
+
+    @OneToMany(mappedBy = "movie")
+    private List<Showtime> showtimes;
 }

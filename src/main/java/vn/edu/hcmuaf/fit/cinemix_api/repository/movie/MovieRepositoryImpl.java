@@ -2,9 +2,10 @@ package vn.edu.hcmuaf.fit.cinemix_api.repository.movie;
 
 import com.querydsl.core.BooleanBuilder;
 import jakarta.persistence.EntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import vn.edu.hcmuaf.fit.cinemix_api.core.repository.AbstractRepository;
-import vn.edu.hcmuaf.fit.cinemix_api.dto.genre.GenreDTO;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.movie.MovieSearch;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.Movie;
 import vn.edu.hcmuaf.fit.cinemix_api.entity.QMovie;
@@ -21,43 +22,33 @@ public class MovieRepositoryImpl extends AbstractRepository<Movie, Long> impleme
     }
 
     @Override
+    public Page<Movie> findAll(Pageable pageable) {
+        return super.findAll(pageable);
+    }
+
+    @Override
     public List<Movie> search(MovieSearch movieSearch) {
         BooleanBuilder predicate = buildSearchPredicate(movieSearch);
         return queryFactory.selectFrom(qMovie).where(predicate).fetch();
     }
 
     @Override
-    public Optional<Movie> findByTitle(String title) {
-        return Optional.ofNullable(queryFactory.selectFrom(qMovie).where(qMovie.title.equalsIgnoreCase(title))
+    public Optional<Movie> findByName(String name) {
+        return Optional.ofNullable(queryFactory.selectFrom(qMovie).where(qMovie.name.equalsIgnoreCase(name))
                                                .fetchFirst());
     }
 
     private BooleanBuilder buildSearchPredicate(MovieSearch movieSearch) {
         BooleanBuilder predicate = new BooleanBuilder();
-        if (movieSearch.getTitle() != null) {
-            predicate.and(qMovie.title.containsIgnoreCase(movieSearch.getTitle()));
+
+        if (movieSearch.getName() != null) {
+            predicate.and(qMovie.name.containsIgnoreCase(movieSearch.getName()));
         }
 
-        if (movieSearch.getGenres() != null && !movieSearch.getGenres().isEmpty()) {
-            List<Long> genreIds = movieSearch.getGenres().stream().map(GenreDTO::getId).toList();
-            predicate.and(qMovie.genres.any().id.in(genreIds));
+        if (movieSearch.getState() != null) {
+            predicate.and(qMovie.state.eq(movieSearch.getState()));
         }
 
-        if (movieSearch.getDirector() != null) {
-            predicate.and(qMovie.director.containsIgnoreCase(movieSearch.getDirector()));
-        }
-
-        if (movieSearch.getActors() != null && !movieSearch.getActors().isEmpty()) {
-            BooleanBuilder actorPredicate = new BooleanBuilder();
-            for (String actor : movieSearch.getActors()) {
-                actorPredicate.or(qMovie.actors.any().containsIgnoreCase(actor));
-            }
-            predicate.and(actorPredicate);
-        }
-
-        if (movieSearch.getReleaseDate() != null) {
-            predicate.and(qMovie.releaseDate.eq(movieSearch.getReleaseDate()));
-        }
         return predicate;
     }
 }

@@ -30,4 +30,12 @@ public class Theater extends BaseEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "theater")
     private List<Room> rooms;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "theater_price",
+            joinColumns = @JoinColumn(name = "theater_id"),
+            inverseJoinColumns = @JoinColumn(name = "ticket_price_id")
+    )
+    private List<TicketPrice> ticketPrices;
 }

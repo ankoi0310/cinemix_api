@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.dto.BaseDTO;
+import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.SeatStyle;
 
 @Data
 @SuperBuilder
@@ -16,5 +17,6 @@ public class SeatDTO extends BaseDTO {
 
     @JsonProperty("isSeat")
     private boolean isSeat;
-
+    
+    private SeatStyle style;
 }

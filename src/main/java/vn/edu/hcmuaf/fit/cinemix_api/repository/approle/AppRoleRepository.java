@@ -9,7 +9,5 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface AppRoleRepository extends CustomRepository<AppRole, Long> {
-    Optional<AppRole> findByName(String name);
-
     Optional<AppRole> findByRole(UserRole role);
 }

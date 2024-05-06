@@ -1,24 +1,17 @@
 package vn.edu.hcmuaf.fit.cinemix_api.service.auth;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.NotFoundException;
-import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.LoginRequest;
-import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.LoginResponse;
-import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.RegisterRequest;
-import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.RegisterResponse;
-import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.jwtRefreshToken.JWTRefreshTokenResponse;
+import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.BaseException;
+import vn.edu.hcmuaf.fit.cinemix_api.dto.auth.*;
 
 public interface AuthenticationService extends UserDetailsService {
-    RegisterResponse register(HttpServletRequest httpRequest,RegisterRequest registerRequest) throws Exception;
+    void register(RegisterRequest request) throws BaseException;
 
-    LoginResponse login(LoginRequest loginRequest) throws Exception;
+    void verifyRegister(String code) throws BaseException;
 
-    void verifyToken(String token);
+    LoginResponse login(LoginRequest loginRequest) throws BaseException;
 
-    void forgotPassword(HttpServletRequest httpServletRequest,String email) throws Exception;
+    void forgotPassword(String email) throws BaseException;
 
-    void resetPassword(String token, String newPassword);
-
-    JWTRefreshTokenResponse refreshToken(String token);
+    void resetPassword(ResetPasswordRequest request) throws BaseException;
 }

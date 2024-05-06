@@ -1,7 +1,7 @@
 package vn.edu.hcmuaf.fit.cinemix_api.service.movie;
 
 import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.BaseException;
-import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.MovieState;
+import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.movie.MovieState;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.movie.*;
 
 import java.util.List;

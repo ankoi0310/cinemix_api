@@ -6,18 +6,15 @@ import vn.edu.hcmuaf.fit.cinemix_api.entity.Movie;
 
 import java.util.List;
 
-@Mapper
+@Mapper(
+        uses = {ShowtimeMapper.class}
+)
 public interface MovieMapper {
-    @Named("toDTO")
-    @Mapping(target = "state", source = "state.value")
-    MovieDTO toDTO(Movie movie);
+    @Named("toMovieDTO")
+    @Mapping(target = "format", source = "format.value")
+    @Mapping(target = "showtimes", qualifiedByName = "toShowtimeDTOsWithoutMovie")
+    MovieDTO toMovieDTO(Movie movie);
 
-    @Named("toEntity")
-    Movie toEntity(MovieDTO movieDTO);
-
-    @IterableMapping(qualifiedByName = "toDTO")
-    List<MovieDTO> toDTOs(List<Movie> movies);
-
-    @IterableMapping(qualifiedByName = "toEntity")
-    List<Movie> toEntities(List<MovieDTO> movieDTOs);
+    @IterableMapping(qualifiedByName = "toMovieDTO")
+    List<MovieDTO> toMovieDTOs(List<Movie> movies);
 }

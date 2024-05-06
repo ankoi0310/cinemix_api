@@ -17,10 +17,10 @@ public class UserRepositoryImpl extends AbstractRepository<AppUser, Long> implem
     }
 
     @Override
-    public Optional<AppUser> findByEmailOrPhone(String email, String phone) {
+    public Optional<AppUser> findByUsername(String value) {
         return Optional.ofNullable(queryFactory
                 .selectFrom(qAppUser)
-                .where(qAppUser.email.eq(email).or(qAppUser.phone.eq(phone)))
+                .where(qAppUser.email.eq(value).or(qAppUser.phone.eq(value)))
                 .fetchOne());
     }
 

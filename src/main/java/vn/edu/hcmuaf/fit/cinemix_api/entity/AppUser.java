@@ -45,7 +45,7 @@ public class AppUser extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(appRole.getName()));
+        return List.of(new SimpleGrantedAuthority(appRole.getRole().name()));
     }
 
     @Override

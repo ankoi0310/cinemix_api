@@ -9,13 +9,12 @@ import java.util.List;
 @Mapper(
         uses = {RoomMapper.class}
 )
-public interface TheaterMapper {
+public abstract class TheaterMapper {
     @Named("toTheaterDTO")
-    @Mapping(target = "rooms", qualifiedByName = "toRoomDTOs")
+    @Mapping(target = "rooms", qualifiedByName = "toRoomDTOsWithoutTheater")
     @Mapping(target = "address", source = "address.fullAddress")
-    @Mapping(target = "state", source = "state.description")
-    TheaterDTO toTheaterDTO(Theater theater);
+    public abstract TheaterDTO toTheaterDTO(Theater theater);
 
     @IterableMapping(qualifiedByName = "toTheaterDTO")
-    List<TheaterDTO> toTheaterDTOs(List<Theater> theaters);
+    public abstract List<TheaterDTO> toTheaterDTOs(List<Theater> theaters);
 }

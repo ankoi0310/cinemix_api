@@ -9,7 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import vn.edu.hcmuaf.fit.cinemix_api.core.handler.domain.HttpResponse;
 import vn.edu.hcmuaf.fit.cinemix_api.core.handler.exception.BaseException;
-import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.MovieState;
+import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.movie.MovieState;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.movie.*;
 import vn.edu.hcmuaf.fit.cinemix_api.service.movie.MovieService;
 
@@ -20,11 +20,10 @@ import java.util.List;
 @RequestMapping("/movie")
 @RequiredArgsConstructor
 public class MovieController {
-
     private final MovieService movieService;
 
     @GetMapping("/search")
-    public ResponseEntity<HttpResponse> searchMovies(@Valid MovieSearch movieSearch) throws BaseException {
+    public ResponseEntity<HttpResponse> searchMovies(MovieSearch movieSearch) throws BaseException {
         List<MovieDTO> movies = movieService.searchMovies(movieSearch);
         return ResponseEntity.ok(HttpResponse.success(movies, "Tìm kiếm phim thành công!"));
     }
