@@ -23,7 +23,6 @@ public class Movie extends BaseEntity {
     private String description;
 
     private String directors;
-
     private String actors;
 
     @ManyToMany(fetch = FetchType.EAGER)

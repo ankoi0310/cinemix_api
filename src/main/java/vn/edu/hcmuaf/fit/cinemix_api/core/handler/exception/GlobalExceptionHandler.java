@@ -12,9 +12,8 @@ import vn.edu.hcmuaf.fit.cinemix_api.core.handler.domain.HttpResponse;
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<HttpResponse> handleException() {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                             .body(HttpResponse.fail("Máy chủ đang gặp sự cố. Vui lòng thử lại sau."));
+    public ResponseEntity<HttpResponse> handleException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(HttpResponse.fail(ex.getMessage()));
     }
 
     @ExceptionHandler(RuntimeException.class)

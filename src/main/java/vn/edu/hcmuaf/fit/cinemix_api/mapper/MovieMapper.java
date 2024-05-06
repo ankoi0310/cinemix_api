@@ -7,19 +7,14 @@ import vn.edu.hcmuaf.fit.cinemix_api.entity.Movie;
 import java.util.List;
 
 @Mapper(
-        injectionStrategy = InjectionStrategy.CONSTRUCTOR
+        uses = {ShowtimeMapper.class}
 )
 public interface MovieMapper {
     @Named("toMovieDTO")
     @Mapping(target = "format", source = "format.value")
+    @Mapping(target = "showtimes", qualifiedByName = "toShowtimeDTOsWithoutMovie")
     MovieDTO toMovieDTO(Movie movie);
-
-    @Named("toMovieEntity")
-    Movie toMovieEntity(MovieDTO movieDTO);
 
     @IterableMapping(qualifiedByName = "toMovieDTO")
     List<MovieDTO> toMovieDTOs(List<Movie> movies);
-
-    @IterableMapping(qualifiedByName = "toMovieEntity")
-    List<Movie> toMovieEntities(List<MovieDTO> movieDTOs);
 }

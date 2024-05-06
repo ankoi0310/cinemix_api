@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.entity.BaseEntity;
+import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.SeatStyle;
 
 @Getter
 @Setter
@@ -17,6 +18,9 @@ public class Seat extends BaseEntity {
     private int columnIndex;
     private int seatIndex;
     private boolean isSeat;
+
+    @Convert(converter = SeatStyle.Converter.class)
+    private SeatStyle style;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "row_id")

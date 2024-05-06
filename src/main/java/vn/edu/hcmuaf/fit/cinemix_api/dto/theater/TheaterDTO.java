@@ -1,5 +1,6 @@
 package vn.edu.hcmuaf.fit.cinemix_api.dto.theater;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.dto.BaseDTO;
@@ -18,5 +19,6 @@ public class TheaterDTO extends BaseDTO {
     private String image;
     private String state;
 
+    @JsonIgnoreProperties({"theater"})
     private List<RoomDTO> rooms;
 }
