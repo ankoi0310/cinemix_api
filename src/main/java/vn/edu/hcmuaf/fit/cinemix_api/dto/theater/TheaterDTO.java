@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.dto.BaseDTO;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.room.RoomDTO;
+import vn.edu.hcmuaf.fit.cinemix_api.dto.ticket.TicketPriceDTO;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public class TheaterDTO extends BaseDTO {
 
     @JsonIgnoreProperties({"theater"})
     private List<RoomDTO> rooms;
+
+    private List<TicketPriceDTO> ticketPrices;
 }
