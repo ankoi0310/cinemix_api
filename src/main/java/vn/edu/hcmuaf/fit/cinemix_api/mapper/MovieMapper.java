@@ -12,7 +12,6 @@ import java.util.List;
 public interface MovieMapper {
     @Named("toMovieDTO")
     @Mapping(target = "format", source = "format.value")
-    @Mapping(target = "showtimes", qualifiedByName = "toShowtimeDTOsWithoutMovie")
     MovieDTO toMovieDTO(Movie movie);
 
     @IterableMapping(qualifiedByName = "toMovieDTO")

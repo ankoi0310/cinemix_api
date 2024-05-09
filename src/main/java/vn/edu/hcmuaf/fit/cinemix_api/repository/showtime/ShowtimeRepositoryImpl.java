@@ -42,11 +42,11 @@ public class ShowtimeRepositoryImpl extends AbstractRepository<Showtime, Long> i
 
     private BooleanBuilder getPredicate(ShowtimeSearch search) {
         BooleanBuilder predicate = new BooleanBuilder();
-        if (search.getMovieId() != null) {
-            predicate.and(qShowtime.movie.id.eq(search.getMovieId()));
+        if (search.getMovie() != null) {
+            predicate.and(qShowtime.movie.id.eq(search.getMovie()));
         }
-        if (search.getTheaterId() != null) {
-            predicate.and(qShowtime.room.theater.id.eq(search.getTheaterId()));
+        if (search.getTheater() != null) {
+            predicate.and(qShowtime.room.theater.id.eq(search.getTheater()));
         }
         if (search.getDate() != null) {
             predicate.and(qShowtime.date.eq(search.getDate()));
