@@ -1,17 +1,14 @@
 package vn.edu.hcmuaf.fit.cinemix_api.dto.movie;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import vn.edu.hcmuaf.fit.cinemix_api.core.dto.BaseDTO;
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.movie.MovieRating;
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.movie.MovieState;
 import vn.edu.hcmuaf.fit.cinemix_api.dto.genre.GenreDTO;
-import vn.edu.hcmuaf.fit.cinemix_api.dto.showtime.ShowtimeDTO;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -40,7 +37,4 @@ public class MovieDTO extends BaseDTO {
     private String posterUrl;
     private String trailerUrl;
     private MovieState state;
-
-    @JsonIgnoreProperties("movie")
-    private List<ShowtimeDTO> showtimes = new ArrayList<>();
 }
