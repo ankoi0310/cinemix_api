@@ -1,6 +1,5 @@
 package vn.edu.hcmuaf.fit.cinemix_api.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -19,14 +18,14 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<HttpResponse> register(@RequestBody RegisterRequest request) throws BaseException {
-        authenticationService.register(request);
-        return ResponseEntity.ok(HttpResponse.success("Đăng ký thành công!"));
+        RegisterResponse registerResponse = authenticationService.register(request);
+        return ResponseEntity.ok(HttpResponse.success(registerResponse, "Vui lòng kiểm tra email để lấy mã OTP!"));
     }
 
-    @PostMapping("/register/verify")
-    public ResponseEntity<HttpResponse> verifyRegister(@RequestParam String code) throws BaseException {
-        authenticationService.verifyRegister(code);
-        return ResponseEntity.ok(HttpResponse.success("Xác thực OTP thành công!"));
+    @PostMapping("/verify")
+    public ResponseEntity<HttpResponse> verify(@RequestParam String code) throws BaseException {
+        String message = authenticationService.verify(code);
+        return ResponseEntity.ok(HttpResponse.success(message));
     }
 
     @PostMapping("/login")
@@ -36,23 +35,20 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<HttpResponse> forgotPassword(
-            HttpServletRequest httpServletRequest,
-            @RequestBody ForgotPasswordRequest request
-    ) throws BaseException {
+    public ResponseEntity<HttpResponse> forgotPassword(@RequestBody ForgotPasswordRequest request) throws BaseException {
         authenticationService.forgotPassword(request.getEmail());
         return ResponseEntity.ok(HttpResponse.success("Vui lòng kiểm tra email để lấy mã OTP!"));
-    }
-
-    @PostMapping("/reset-password/verify")
-    public ResponseEntity<HttpResponse> verifyResetPassword(@RequestParam String code) throws BaseException {
-//        authenticationService.verifyResetPassword(code);
-        return ResponseEntity.ok(HttpResponse.success("Xác thực OTP thành công!"));
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<HttpResponse> resetPassword(@RequestBody ResetPasswordRequest request) throws BaseException {
         authenticationService.resetPassword(request);
-        return ResponseEntity.ok(HttpResponse.success("Reset password successfully"));
+        return ResponseEntity.ok(HttpResponse.success("Đặt lại mật khẩu thành công!"));
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<HttpResponse> refreshToken() throws BaseException {
+        RefreshTokenResponse refreshTokenResponse = authenticationService.refreshToken();
+        return ResponseEntity.ok(HttpResponse.success(refreshTokenResponse, "Làm mới token thành công!"));
     }
 }

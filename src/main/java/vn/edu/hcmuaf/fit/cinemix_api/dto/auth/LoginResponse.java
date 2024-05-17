@@ -7,8 +7,7 @@ import vn.edu.hcmuaf.fit.cinemix_api.core.shared.constants.SecurityConstant;
 @Data
 @Builder
 public class LoginResponse {
-    private String fullName;
-    private String email;
+    private String welcomeName;
     private String accessToken;
     private String refreshToken;
 

@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import vn.edu.hcmuaf.fit.cinemix_api.core.shared.constants.SecurityConstant;
@@ -93,7 +94,7 @@ public class JwtProvider {
     private String[] getAuthorities(UserDetails userDetails) {
         return userDetails.getAuthorities()
                           .stream()
-                          .map(grantedAuthority -> "ROLE_" + grantedAuthority.getAuthority())
+                          .map(GrantedAuthority::getAuthority)
                           .toArray(String[]::new);
     }
 }
