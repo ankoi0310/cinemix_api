@@ -2,6 +2,7 @@ package vn.edu.hcmuaf.fit.cinemix_api.service.auth;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +19,7 @@ import vn.edu.hcmuaf.fit.cinemix_api.entity.*;
 import vn.edu.hcmuaf.fit.cinemix_api.repository.approle.AppRoleRepository;
 import vn.edu.hcmuaf.fit.cinemix_api.repository.user.UserRepository;
 import vn.edu.hcmuaf.fit.cinemix_api.service.otp.OTPService;
+import vn.edu.hcmuaf.fit.cinemix_api.utils.AppUtils;
 
 import java.util.Optional;
 
@@ -34,7 +36,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void register(RegisterRequest registerRequest) throws BaseException {
+    public RegisterResponse register(RegisterRequest registerRequest) throws BaseException {
         try {
             Optional<AppUser> appUserEmail = userRepository.findByEmail(registerRequest.getEmail());
             if (appUserEmail.isPresent()) {
@@ -54,7 +56,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             UserInfo userInfo = UserInfo.builder()
                                         .fullName(registerRequest.getFullName())
-                                        .birthday(registerRequest.getBirthday())
                                         .build();
             AppUser newUser = AppUser.builder()
                                      .email(registerRequest.getEmail())
@@ -71,6 +72,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             // Send OTP
             mailService.sendOTP(newUser.getEmail(), otp.getCode(), otp.getType());
+
+            return RegisterResponse.builder()
+                                   .email(newUser.getEmail())
+                                   .build();
         } catch (NotFoundException | ServiceUnavailableException e) {
             log.error(e.toString());
             throw e;
@@ -81,18 +86,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void verifyRegister(String code) throws BaseException {
+    public String verify(String code) throws BaseException {
         OTP otp = otpService.getOTPByCode(code);
-        if (otp.getType() != OTPType.VERIFY_EMAIL) {
+
+        if (otp == null) {
             throw new BadRequestException("Mã OTP không hợp lệ");
         }
 
-        AppUser appUser = userRepository.findByEmail(otp.getEmail())
-                                        .orElseThrow(() -> new NotFoundException("Tài khoản không tồn tại"));
+        switch (otp.getType()) {
+            case VERIFY_EMAIL:
+                AppUser appUser = userRepository.findByEmail(otp.getEmail())
+                                                .orElseThrow(() -> new NotFoundException("Tài khoản không tồn tại"));
 
-        appUser.setEmailVerified(true);
-        appUser.setEnabled(true);
-        userRepository.save(appUser);
+                appUser.setEmailVerified(true);
+                appUser.setEnabled(true);
+                userRepository.save(appUser);
+                return "Xác thực email thành công";
+            case VERIFY_PHONE, RESET_PASSWORD:
+                throw new BadRequestException("Chức năng chưa được hỗ trợ");
+            default:
+                throw new BadRequestException("Loại OTP không hợp lệ");
+        }
     }
 
     @Override
@@ -105,7 +119,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 throw new BadRequestException("Mật khẩu không đúng");
             }
 
-            if (!appUser.getEnabled()) {
+            if (!appUser.isEnabled()) {
                 throw new BadRequestException("Tài khoản chưa được kích hoạt");
             }
 
@@ -123,8 +137,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String refreshToken = jwtProvider.generateRefreshToken(authentication);
 
             return LoginResponse.builder()
-                                .fullName(appUser.getUserInfo().getFullName())
-                                .email(appUser.getEmail())
+                                .welcomeName(StringUtils.substringAfterLast(appUser.getUserInfo().getFullName(), " "))
                                 .accessToken(token)
                                 .refreshToken(refreshToken)
                                 .build();
@@ -138,12 +151,66 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    public RefreshTokenResponse refreshToken() throws BaseException {
+        try {
+            String username = AppUtils.getCurrentUsername();
+
+            UserDetails userDetails = loadUserByUsername(username);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails,
+                    null,
+                    userDetails.getAuthorities()
+            );
+
+            String newAccessToken = jwtProvider.generateAccessToken(authentication);
+
+            // Generate new refresh token
+            String newRefreshToken = jwtProvider.generateRefreshToken(authentication);
+
+            return RefreshTokenResponse.builder()
+                                       .accessToken(newAccessToken)
+                                       .refreshToken(newRefreshToken)
+                                       .build();
+        } catch (Exception e) {
+            log.error(e.toString());
+            throw new ServiceUnavailableException("Không thể làm mới token");
+        }
+    }
+
+    @Override
     public void forgotPassword(String email) throws BaseException {
 //        mailService.sendResetPasswordEmail(passwordResetOTP);
     }
 
     @Override
     public void resetPassword(ResetPasswordRequest request) {
+    }
+
+    @Override
+    public void changePassword(ChangePasswordRequest request) throws BaseException {
+        try {
+            String email = AppUtils.getCurrentUsername();
+
+            AppUser appUser = userRepository.findByEmail(email)
+                                            .orElseThrow(() -> new NotFoundException("Tài khoản không tồn tại"));
+
+            if (!passwordEncoder.matches(request.getOldPassword(), appUser.getPassword())) {
+                throw new BadRequestException("Mật khẩu cũ không đúng");
+            }
+
+            if (!passwordEncoder.matches(request.getNewPassword(), appUser.getPassword())) {
+                throw new BadRequestException("Mật khẩu mới không được trùng với mật khẩu cũ");
+            }
+
+            appUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
+            userRepository.save(appUser);
+        } catch (NotFoundException | BadRequestException e) {
+            log.error(e.toString());
+            throw e;
+        } catch (Exception e) {
+            log.error(e.toString());
+            throw new ServiceUnavailableException("Không thể thay đổi mật khẩu");
+        }
     }
 
     @Override
