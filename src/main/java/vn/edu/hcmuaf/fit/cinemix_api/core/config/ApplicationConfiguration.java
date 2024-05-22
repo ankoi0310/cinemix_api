@@ -1,11 +1,8 @@
 package vn.edu.hcmuaf.fit.cinemix_api.core.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.convert.ApplicationConversionService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -44,10 +41,5 @@ public class ApplicationConfiguration implements WebMvcConfigurer {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Override
-    public void addFormatters(@NonNull FormatterRegistry registry) {
-        ApplicationConversionService.configure(registry);
     }
 }

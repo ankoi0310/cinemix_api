@@ -39,8 +39,10 @@ public class AppUser extends BaseEntity implements UserDetails {
     private UserInfo userInfo;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(referencedColumnName = "id")
     private AppRole appRole;
+
+    @OneToMany(mappedBy = "user")
+    private List<Invoice> invoices;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

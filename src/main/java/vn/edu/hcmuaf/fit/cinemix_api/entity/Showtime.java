@@ -7,7 +7,7 @@ import vn.edu.hcmuaf.fit.cinemix_api.core.entity.BaseEntity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
@@ -39,4 +39,16 @@ public class Showtime extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "seat_id")
     )
     private List<Seat> bookedSeats;
+
+    public void addBookedSeat(Seat... seat) {
+        if (bookedSeats == null) {
+            bookedSeats = new ArrayList<>();
+        }
+
+        bookedSeats.addAll(Arrays.asList(seat));
+    }
+
+    public void removeBookedSeat(Seat seat) {
+        bookedSeats.remove(seat);
+    }
 }
