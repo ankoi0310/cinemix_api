@@ -25,7 +25,11 @@ public class Invoice extends BaseEntity {
     @OneToMany(mappedBy = "invoice", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Ticket> tickets;
 
+    @Column(columnDefinition = "boolean default false")
     private boolean paid;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean canceled;
 
     public void addTickets(List<Ticket> tickets) {
         if (this.tickets == null) {

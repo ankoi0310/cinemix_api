@@ -182,7 +182,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public void cancelBooking(int code) throws BaseException {
+    public InvoiceDTO cancelBooking(int code) throws BaseException {
         Invoice invoice = invoiceRepository.findByCode(code)
                                            .orElseThrow(() -> new NotFoundException("Không tìm thấy hóa đơn"));
 
@@ -201,11 +201,14 @@ public class BookingServiceImpl implements BookingService {
                                                   .map(Ticket::getShowtime)
                                                   .toList());
 
-        invoiceRepository.delete(invoice);
+        invoice.setCanceled(true);
+        invoice = invoiceRepository.save(invoice);
+
+        return invoiceMapper.toInvoiceDTO(invoice);
     }
 
     @Override
-    public InvoiceDTO successBooking(int code) throws BaseException {
+    public InvoiceDTO completePayment(int code) throws BaseException {
         Invoice invoice = invoiceRepository.findByCode(code)
                                            .orElseThrow(() -> new NotFoundException("Không tìm thấy hóa đơn"));
 

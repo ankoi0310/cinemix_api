@@ -5,6 +5,6 @@ import vn.edu.hcmuaf.fit.cinemix_api.core.shared.enums.movie.MovieState;
 
 @Data
 public class MovieSearch {
-    private String name;
+    private String keyword;
     private MovieState state;
 }

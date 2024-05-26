@@ -20,20 +20,20 @@ public class BookingController {
 
     @GetMapping("/checkout/cancel")
     public ResponseEntity<HttpResponse> cancel(@RequestParam int code) throws BaseException {
-        bookingService.cancelBooking(code);
-        return ResponseEntity.ok(HttpResponse.success("Hủy vé thành công!"));
+        InvoiceDTO invoice = bookingService.cancelBooking(code);
+        return ResponseEntity.ok(HttpResponse.success(invoice, "Hủy vé thành công!"));
     }
 
-    @GetMapping("/checkout/success")
+    @GetMapping("/checkout/complete")
     public ResponseEntity<HttpResponse> success(@RequestParam int code) throws BaseException {
-        InvoiceDTO invoice = bookingService.successBooking(code);
-        return ResponseEntity.ok(HttpResponse.success(invoice, "Thanh toán vé thành công!"));
+        InvoiceDTO invoice = bookingService.completePayment(code);
+        return ResponseEntity.ok(HttpResponse.success(invoice, "Thanh toán thành công!"));
     }
 
     @PostMapping
     public ResponseEntity<HttpResponse> createBooking(@RequestBody BookingRequest request) throws BaseException,
             IOException {
         LinkCreationResponse linkCreationResponse = bookingService.createBooking(request);
-        return ResponseEntity.ok(HttpResponse.success(linkCreationResponse, "Đặt vé thành công!"));
+        return ResponseEntity.ok(HttpResponse.success(linkCreationResponse, "Tạo vé thành công!"));
     }
 }

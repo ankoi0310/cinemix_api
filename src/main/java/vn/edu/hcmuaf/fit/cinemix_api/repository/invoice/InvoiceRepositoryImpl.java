@@ -19,7 +19,7 @@ public class InvoiceRepositoryImpl extends AbstractRepository<Invoice, Long> imp
     @Override
     public List<Invoice> findByUser(AppUser user) {
         return queryFactory.selectFrom(qInvoice)
-                           .where(qInvoice.user.eq(user))
+                           .where(qInvoice.user.eq(user).and(qInvoice.paid.eq(true)))
                            .fetch();
     }
 
