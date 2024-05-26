@@ -41,8 +41,8 @@ public class MovieRepositoryImpl extends AbstractRepository<Movie, Long> impleme
     private BooleanBuilder buildSearchPredicate(MovieSearch movieSearch) {
         BooleanBuilder predicate = new BooleanBuilder();
 
-        if (movieSearch.getName() != null) {
-            predicate.and(qMovie.name.containsIgnoreCase(movieSearch.getName()));
+        if (movieSearch.getKeyword() != null) {
+            predicate.and(qMovie.name.containsIgnoreCase(movieSearch.getKeyword()));
         }
 
         if (movieSearch.getState() != null) {

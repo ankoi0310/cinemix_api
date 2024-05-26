@@ -17,6 +17,6 @@ public class SeatDTO extends BaseDTO {
 
     @JsonProperty("isSeat")
     private boolean isSeat;
-    
+
     private SeatStyle style;
 }

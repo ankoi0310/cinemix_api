@@ -60,6 +60,11 @@ dependencies {
     implementation 'com.google.guava:guava:33.1.0-jre'
     implementation 'com.google.firebase:firebase-admin:9.2.0'
 
+    /* http */
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
+    implementation 'org.apache.httpcomponents.core5:httpcore5:5.2.4'
+    implementation 'org.apache.httpcomponents.client5:httpclient5-fluent:5.3.1'
+
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'
