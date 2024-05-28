@@ -16,4 +16,5 @@ public class InvoiceDTO extends BaseDTO {
     private int total;
     private List<TicketDTO> tickets;
     private boolean paid;
+    private boolean canceled;
 }
